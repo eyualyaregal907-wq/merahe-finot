@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>መርሐ ፍኖት</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --text-main: #1a1a2e;
+            --text-muted: #4a4e69;
+            --accent-color: #0d47a1;
+            --highlight: #ffca28;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Ethiopic', sans-serif;
+        }
+
+        body {
+            /* ማራኪ የሆነ የጀርባ ቀለም (Gradient) */
+            background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-left: 1px solid var(--glass-border);
+            border-right: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        header {
+            padding: 25px 20px 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            padding-bottom: 90px; /* ለ Bottom Nav ቦታ ለመተው */
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar ድብቅ ለማድረግ */
+        .content-area::-webkit-scrollbar { width: 0; }
+
+        .tab-content {
+            display: none;
+            animation: fadeAndSlideIn 0.5s ease forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeAndSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Glassmorphism Cards */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .verse-text {
+            font-style: italic;
+            color: #2c3e50;
+            background: rgba(255,255,255,0.4);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            margin: 10px 0;
+        }
+
+        .badge {
+            background: var(--highlight);
+            color: #000;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 800;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Glassmorphism Bottom Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 10px 20px;
+            z-index: 20;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+            padding: 8px 12px;
+            border-radius: 12px;
+        }
+
+        .nav-item.active {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.15);
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>መርሐ ፍኖት</h1>
+        </header>
+
+        <div class="content-area">
+            
+            <div id="daily" class="tab-content active">
+                <div class="section-title">የዕለት ምግብ</div>
+                <div class="card">
+                    <h3>መጋቢት 10, 2026</h3>
+                    <div class="verse-text">"እግዚአብሔር ብርሃኔና መድኃኒቴ ነው፤ የሚያስፈራኝ ማን ነው?" <br><strong>(መዝሙር 26:1)</strong></div>
+                    <p><strong>ትምህርት፡</strong> ዛሬን ስትጀምር በልበ ሙሉነት ይሁን፤ ፈጣሪ ካንተ ጋር ነው።</p>
+                </div>
+                <div class="card">
+                    <h3>መጋቢት 11, 2026</h3>
+                    <div class="verse-text">"በመንገድህ እርሱ እውቅ እርሱም ጎዳናህን ያቀናልሃል።" <br><strong>(ምሳሌ 3:6)</strong></div>
+                    <p><strong>ትምህርት፡</strong> ውሳኔ ከመወሰንህ በፊት ፈጣሪን አማክር፤ መንገዱን ይከፍታል።</p>
+                </div>
+                <div class="card">
+                    <h3>መጋቢት 12, 2026</h3>
+                    <div class="verse-text">"ትካዜህን በእግዚአብሔር ላይ ጣል፥ እርሱም ይደግፍሃል።" <br><strong>(መዝሙር 54:22)</strong></div>
+                    <p><strong>ትምህርት፡</strong> የከበደህን ነገር ለፈጣሪ ንገረው፤ እርሱ ሰላምን ይሰጥሃል።</p>
+                </div>
+            </div>
+
+            <div id="fasting" class="tab-content">
+                <div class="section-title">ጾም ወሱባኤ</div>
+                <div class="card">
+                    <h3>ዓቢይ ጾም <span class="badge" style="background:#a8e6cf;">አሁን ያለ</span></h3>
+                    <p><strong>ከ:</strong> የካቲት 24 <strong>እስከ:</strong> ሚያዝያ 19</p>
+                    <p><strong>ስግደት:</strong> 41 እና ከዚያ በላይ</p>
+                    <p><strong>መመሪያ:</strong> የጌታችን የ40 ቀን ጾም፤ የንስሐ ወቅት።</p>
+                </div>
+                <div class="card">
+                    <h3>የግል ሱባኤ <span class="badge">በቅርቡ</span></h3>
+                    <p><strong>ከ:</strong> መጋቢት 15 <strong>እስከ:</strong> መጋቢት 22</p>
+                    <p><strong>ስግደት:</strong> 64</p>
+                    <p><strong>መመሪያ:</strong> በዝምታና በጸሎት ከፈጣሪ ጋር የሚገናኝበት ጊዜ።</p>
+                </div>
+            </div>
+
+            <div id="church" class="tab-content">
+                <div class="section-title">ምስጢራተ ቤተክርስቲያን</div>
+                <div class="card">
+                    <h3>ንስሐ</h3>
+                    <p><strong>ዝግጅት:</strong> የንስሐ አባትህን አግኝተህ በየጊዜው መናዘዝ።</p>
+                    <p><strong>ማሳሰቢያ:</strong> የንስሐ አባትህን የምታገኝበት ቀን ደርሷል።</p>
+                    <div class="verse-text">"ኃጢአታችንን ብንናዘዝ... ይቅር ይለናል" (1 ዮሐ 1:9)</div>
+                </div>
+                <div class="card">
+                    <h3>ቅዱስ ቁርባን</h3>
+                    <p><strong>ዝግጅት:</strong> በንጽሕና መዘጋጀት፣ የሰዓት ጥበቃና የጸሎት ዝግጅት።</p>
+                    <p><strong>ማሳሰቢያ:</strong> ለቅዱስ ቁርባን ዝግጁ ነህ?</p>
+                    <div class="verse-text">"ሥጋዬን የሚበላ ደሜንም የሚጠጣ የዘላለም ሕይወት አለው"</div>
+                </div>
+                <div class="card">
+                    <h3>ቅዳሴ</h3>
+                    <p><strong>ዝግጅት:</strong> በሰንበትና በበዓላት በጥዋት ቤተክርስቲያን መገኘት።</p>
+                    <p><strong>ማሳሰቢያ:</strong> የነገውን የቅዳሴ ሰዓት እንዳትረሳ።</p>
+                </div>
+            </div>
+
+            <div id="charity" class="tab-content">
+                <div class="section-title">በጎ አድራጎት</div>
+                <div class="card">
+                    <h3>መቄዶንያ</h3>
+                    <p><strong>አገልግሎት:</strong> አረጋውያንንና የአእምሮ ሕመምተኞችን መርዳት</p>
+                    <p><strong>ባንክ:</strong> 1000000... (CBE)</p>
+                    <p><strong>አድራሻ/ስልክ:</strong> አዲስ አበባ / 8080</p>
+                </div>
+                <div class="card">
+                    <h3>የኢትዮጵያ ቀይ መስቀል</h3>
+                    <p><strong>አገልግሎት:</strong> የድንገተኛ አደጋና የሕክምና እርዳታ</p>
+                    <p><strong>ባንክ:</strong> 1000123... (CBE)</p>
+                    <p><strong>አድራሻ/ስልክ:</strong> አዲስ አበባ / 907</p>
+                </div>
+            </div>
+
+        </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('daily', this)">
+                <span class="nav-icon">📖</span>
+                <span class="nav-label">ምግብ</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('fasting', this)">
+                <span class="nav-icon">🙏</span>
+                <span class="nav-label">ጾም</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('church', this)">
+                <span class="nav-icon">⛪</span>
+                <span class="nav-label">ሕይወት</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('charity', this)">
+                <span class="nav-icon">❤️</span>
+                <span class="nav-label">በጎነት</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        function switchTab(tabId, element) {
+            // 1. ሁሉንም ገጾች መደበቅ
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 2. ሁሉንም የናቪጌሽን በተኖች ከ active ነጻ ማድረግ
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // 3. የተመረጠውን ገጽ እና በተን ማንቃት
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>
